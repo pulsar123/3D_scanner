@@ -29,28 +29,34 @@ void Display(int code)
 {
   lcd.clearDisplay();
 
-// Row 1:
+  // Row 1:
   lcd.setCursor(0, 0);
   sprintf(g.buffer, "t=%d.%1d", g.reg.dt_shots / 10, g.reg.dt_shots % 10);
   lcd.print(g.buffer);
 
   lcd.setCursor(8 * COL, 0);
-  sprintf(g.buffer, "N=%3d", g.reg.N_shots);
+  sprintf(g.buffer, "N=%d", g.reg.N_shots);
   lcd.print(g.buffer);
-  
-// Row 2:
+
+  // Row 2:
   lcd.setCursor(0, 1 * ROW);
   sprintf(g.buffer, "Reg=%1d", g.ireg);
   lcd.print(g.buffer);
 
   lcd.setCursor(8 * COL, 1 * ROW);
-  sprintf(g.buffer, "dN=%2d", g.reg.extra_shots);
+  sprintf(g.buffer, "dN=%d", g.reg.extra_shots);
   lcd.print(g.buffer);
 
-// Row 3:
+  // Row 3:
   lcd.setCursor(0, 2 * ROW);
   sprintf(g.buffer, "BL=%1d", g.backlight);
   lcd.print(g.buffer);
+
+#ifdef DEBUG
+  lcd.setCursor(8*COL, 2 * ROW);
+  sprintf(g.buffer, "%4d", g.flash_delay/1000);
+  lcd.print(g.buffer);
+#endif  
 
   switch (code)
   {
@@ -81,8 +87,10 @@ void Display(int code)
 
   }
 
+// Drawing some lines:
   lcd.drawLine(0, 26, LCDWIDTH - 1, 26, BLACK);
   lcd.drawLine(42, 0, 42, 25, BLACK);
+  
   lcd.display();
 
 }

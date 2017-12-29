@@ -22,6 +22,7 @@ void initialize(byte factory_reset)
   g.i_step = 0;
   g.t_step = g.t;
   g.message = 0;
+  g.flash_delay = FLASH_DELAY;
 
   if (factory_reset)
   {

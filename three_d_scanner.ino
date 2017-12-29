@@ -1,5 +1,11 @@
 /*
-  Arduino code to operate a 3D scanner  - a stepper motor spinning the platform with the object scanned, + (in the future) to trigger camera shutter regularly.
+  Arduino code to operate a 3D scanner  - a stepper motor spinning the platform with the object scanned,  trigering camera shutter and (optionally) an external flash regularly.
+  Can be used with Canon DSLRs with Magic Lantern's FRSP (electronic shutter) mode, with an external flash. Confirmed to work with 50D and 6D. For 6D, the program mlv_dump from
+  http://www.magiclantern.fm/forum/index.php?topic=10526.msg188558#msg188558 works well under Windows.
+
+  Includes modified Adafruit PCD8544 library.
+
+  Written by Sergey Mashchenko.
 */
 
 #include <math.h>

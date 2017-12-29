@@ -1,6 +1,9 @@
 #ifndef THREE_D_SCANNER_H
 #define THREE_D_SCANNER_H
 
+// Uncomment to fine-tune the FLASH_DELAY parameter for Canon DSLRs using Silent Full Resolution Picture mode
+//#define DEBUG
+
 /* PCB pins
 
   - Stepper driver:
@@ -50,7 +53,7 @@
   6/B: Number of additional shots
   7/8: Backlighting
   9/C:
-   / D: rewind / fast forward
+   / D: rewind / fast forward - to be done
   0:
   #: start/stop
 */
@@ -129,9 +132,15 @@ const unsigned long int DT_MESSAGE = 2000000; // Time to display help messages i
 // Constraints:
 //   DT_SHOTS > DT_AF
 //   FLASH_DELAY+DT_FLASH <= DT_AF
+
+// These constants only matter when using Canon DSLR with Magic Lantern, in FRSP (electronic shutter) mode
+// The default values work for 50D and 6D, when using shutter exposure 1/4s. The shortest time between shots is 6.0s.
 // Time to half-press the camera shutter button, us
 const unsigned long DT_AF = 2000000;
 // Delay for the flash, from the moment the half-press is initiated, us
+// It can be adjusted in DEBUG mode
+// If it's too short, flash happenes after the silent picture is taken, so images get no flash exposure.
+// If it's getting too long, first you'll get partially (only the bottom) exposed images; for way too long there will be no flash exposure
 const unsigned long FLASH_DELAY = 1100000;
 // Flash trigger duration, us:
 const unsigned long DT_FLASH = 100000;
@@ -180,11 +189,12 @@ struct global
   byte shooting; // =1 when shooting, 0 when not
   unsigned long t_message; // Time when a message was displayed
   byte message; // 1 if a message is displayed
+  unsigned long int flash_delay;
   char buffer[15];  // char buffer
 };
 
 struct global g;
 
-unsigned long int dt=0;
+//unsigned long int dt=0, t1=0, t2=0, t3=0, t4=0;
 #endif
 

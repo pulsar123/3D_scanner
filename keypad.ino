@@ -86,12 +86,12 @@ void process_keypad()
             g.AF_on = 0;
             g.flash_on = 2;
             // Minus FLASH_DELAY so the first flash will happen g.reg.dt_shots after initiating a run:
-            g.t_shoot_start = g.t - FLASH_DELAY;
+            g.t_shoot_start = g.t - g.flash_delay;
             g.i_step = 0;
             g.t_step = g.t;
             g.N_tot = g.reg.N_shots + g.reg.extra_shots;
-            g.last_step = (unsigned long int)((float)g.N_tot / (float)g.reg.N_shots * NTOT_MICROSTEPS);            
-            g.dt_microstep = (float)(g.reg.N_shots * g.reg.dt_shots*100000) / NTOT_MICROSTEPS; // Time step for one microstep, us:
+            g.last_step = (unsigned long int)((float)g.N_tot / (float)g.reg.N_shots * NTOT_MICROSTEPS);
+            g.dt_microstep = (float)(g.reg.N_shots * g.reg.dt_shots * 100000) / NTOT_MICROSTEPS; // Time step for one microstep, us:
           }
           else
           {
@@ -111,7 +111,7 @@ void process_keypad()
         case '1':  //Reduce time between shots
           if (g.run == 1)
             break;
-          if ((g.reg.dt_shots-1)*100000 > DT_AF)
+          if ((g.reg.dt_shots - 1) * 100000 > DT_AF)
           {
             g.reg.dt_shots--;
             EEPROM.put(g.ireg * SIZE_REG, g.reg);
@@ -168,7 +168,7 @@ void process_keypad()
         case '5':  //Increase ireg
           if (g.run == 1)
             break;
-          if (g.ireg < N_REGS-1)
+          if (g.ireg < N_REGS - 1)
           {
             g.ireg++;
             EEPROM.put(ADDR_IREG, g.ireg);
@@ -211,7 +211,7 @@ void process_keypad()
           break;
 
         case '8':  //Increase backlight
-          if (g.backlight < N_BACKLIGHT-1)
+          if (g.backlight < N_BACKLIGHT - 1)
           {
             g.backlight++;
             set_backlight();
@@ -220,6 +220,24 @@ void process_keypad()
           }
           break;
 
+#ifdef DEBUG
+        // Fine-tuning the FLASH_DELAY parameter, with 5 ms steps
+        case '9':
+          if (g.flash_delay > 100000)
+          {
+            g.flash_delay = g.flash_delay - 5000;
+            Display(-1);
+          }
+          break;
+
+        case 'C':
+          if (g.flash_delay < DT_AF - DT_FLASH - 5000)
+          {
+            g.flash_delay = g.flash_delay + 5000;
+            Display(-1);
+          }
+          break;
+#endif
       }
 
       //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
