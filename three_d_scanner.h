@@ -53,8 +53,8 @@
   6/B: Number of additional shots
   7/8: Backlighting
   9/C:
-   / D: rewind / fast forward - to be done
-  0:
+  * / D: rewind / fast forward - to be done
+  0: A test shot (no rotation)
   #: start/stop
 */
 const byte rows = 4; //four rows
@@ -145,9 +145,21 @@ const unsigned long FLASH_DELAY = 1100000;
 // Flash trigger duration, us:
 const unsigned long DT_FLASH = 100000;
 
+// Initial rewind speed (rotations per minute):
+const float SPEED_INIT_RPM = 1.0;
+// Maximum rewind speed (rotations per minute):
+const float SPEED_MAX_RPM = 20.0;
+// Time (secoconds) to go from zero to maximum speed when rewinding:
+const float T_ACCEL_S = 6.0;
 
 // Derived parameters:
 const float NTOT_MICROSTEPS = (float)(STEPS_PER_ROTATION*N_MICROSTEPS); // Microsteps per full rotation
+// Initial rewind time step, us:
+const float DT_INIT = (float)(1e6/(SPEED_INIT_RPM/60.0 * NTOT_MICROSTEPS));
+// Minimum rewind time step, us:
+const float DT_MIN = (float)(1e6/(SPEED_MAX_RPM/60.0 * NTOT_MICROSTEPS));
+// Acceleration in ustep/us^2 units:
+const float ACCEL =  1.0/(DT_MIN * T_ACCEL_S * 1e6);
 
 
 // Structure to have custom parameters saved to EEPROM
@@ -170,6 +182,7 @@ struct global
   unsigned long int i_step; // the motor's microstep
   unsigned long int t_shoot_start; // Time when shooting started
   unsigned long int last_step; // Number of microsteps to make
+  float dt; // Current time step when rewinding
   float dt_microstep;  // Time step for one microstep, us
   byte en;  // Motor enable flag
   int i_shot; // Shot number
@@ -186,6 +199,7 @@ struct global
   int ireg; // Current register
   int backlight; // Backlight brightness (0-3)
   byte run; // =1 when motor running, 0 when stopped
+  char rewind; // -1: CW, +1: CCW rotation; 0: no rotation
   byte shooting; // =1 when shooting, 0 when not
   unsigned long t_message; // Time when a message was displayed
   byte message; // 1 if a message is displayed

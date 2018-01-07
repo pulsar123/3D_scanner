@@ -220,6 +220,42 @@ void process_keypad()
           }
           break;
 
+        case '0':  //Make a test shot
+          if (g.run == 0 && g.shooting == 0)
+          {
+            g.shooting = 1;
+            g.i_shot = 0;
+            g.AF_on = 0;
+            g.flash_on = 2;
+            // Ensuring the test shot starts immediately:
+            g.t_shoot_start = g.t - g.reg.dt_shots * 100000;
+            g.N_tot = 1;
+            Display(5);
+          }
+          break;
+
+        case '*':  //Rewind (rotate CW)
+          if (g.shooting == 1)
+            break;
+          if (fake_key == 0 && g.run == 0 && g.rewind == 0)
+          {
+            g.run = 1;
+            g.rewind = -1;
+            g.init = 1;
+          }
+          break;
+
+        case 'D':  //Fast forward (rotate CCW)
+          if (g.shooting == 1)
+            break;
+          if (fake_key == 0 && g.run == 0 && g.rewind == 0)
+          {
+            g.run = 1;
+            g.rewind = 1;
+            g.init = 1;
+          }
+          break;
+
 #ifdef DEBUG
         // Fine-tuning the FLASH_DELAY parameter, with 5 ms steps
         case '9':
@@ -252,6 +288,8 @@ void process_keypad()
     {
       // Resetting the counter of key repeats:
       g.N_repeats = 0;
+      if (g.rewind != 0)
+        g.run = 0;
     }
 
   }  // End of if(keyStateChanged)

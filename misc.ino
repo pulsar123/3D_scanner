@@ -85,6 +85,10 @@ void Display(int code)
               "level");
       break;
 
+    case 5:
+      message("A test shot",
+              "");
+      break;
   }
 
 // Drawing some lines:

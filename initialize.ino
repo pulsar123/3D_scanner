@@ -9,6 +9,7 @@ void initialize(byte factory_reset)
   g.key_old = '=';
 
   g.run = 0;
+  g.rewind = 0;
   g.shooting = 0;
   g.t_message = g.t;
   g.t_shoot_start = g.t;
