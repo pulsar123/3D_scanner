@@ -77,6 +77,8 @@ void process_keypad()
       switch (key0)
       {
         case '#': // Start/stop
+          if (g.rewind != 0)
+            break;
           if (g.run == 0 && g.shooting == 0)
           {
             g.run = 1;
@@ -228,7 +230,7 @@ void process_keypad()
             g.AF_on = 0;
             g.flash_on = 2;
             // Ensuring the test shot starts immediately:
-            g.t_shoot_start = g.t - g.reg.dt_shots * 100000;
+            g.t_shoot_start = g.t - g.reg.dt_shots * 100000 - 10000;
             g.N_tot = 1;
             Display(5);
           }

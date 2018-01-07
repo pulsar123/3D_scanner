@@ -31,7 +31,7 @@ void camera()
     if (g.i_shot >= g.N_tot)
     {
       // Finished shooting
-      g.shooting == 0;
+      g.shooting = 0;
       Display(-1);
     }
   }
